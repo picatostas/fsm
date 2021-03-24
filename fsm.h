@@ -12,8 +12,10 @@
 #include <stdbool.h>
 
 
-typedef bool (*fsm_condition_t)();
-typedef void (*fsm_action_t)();
+typedef struct fsm_s fsm_t;
+
+typedef bool (*fsm_condition_t)(fsm_t *fsm);
+typedef void (*fsm_action_t)(fsm_t *fsm);
 
 typedef struct {
     int8_t prev_state;
@@ -22,10 +24,11 @@ typedef struct {
     fsm_action_t action;
 } fsm_transition_t;
 
-typedef struct {
+struct fsm_s {
     uint8_t current_state;
     fsm_transition_t *transitions;
-}fsm_t;
+    void *user_context;
+};
 
 /**
  * @brief iterate over all transitions to evaluate if a state change will be produced or not.
